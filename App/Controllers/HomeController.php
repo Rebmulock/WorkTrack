@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\AControllerBase;
 use App\Core\Responses\Response;
+use App\Core\Responses\ViewResponse;
 
 /**
  * Class HomeController
@@ -17,14 +18,14 @@ class HomeController extends AControllerBase
      * @param $action
      * @return bool
      */
-    public function authorize($action)
+    public function authorize($action): bool
     {
         return true;
     }
 
     /**
      * Example of an action (authorization needed)
-     * @return \App\Core\Responses\Response|\App\Core\Responses\ViewResponse
+     * @return Response
      */
     public function index(): Response
     {
@@ -33,7 +34,7 @@ class HomeController extends AControllerBase
 
     /**
      * Example of an action accessible without authorization
-     * @return \App\Core\Responses\ViewResponse
+     * @return ViewResponse
      */
     public function contact(): Response
     {
