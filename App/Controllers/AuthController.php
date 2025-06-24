@@ -30,20 +30,32 @@ class AuthController extends AControllerBase
     /**
      * Login a user
      * @return Response
+     * @throws JsonException
      */
     public function login(): Response
     {
-        $formData = $this->app->getRequest()->getPost();
+        $formData = $this->request()->getRawBodyJSON();
         $logged = null;
-        if (isset($formData['submit'])) {
-            $logged = $this->app->getAuth()->login($formData['login'], $formData['password']);
+
+        if (!empty($formData)) {
+            $logged = $this->app->getAuth()->login($formData->username, $formData->password);
             if ($logged) {
-                return $this->redirect($this->url("admin.index"));
+                return $this->json([
+                    'success' => true,
+                    'message' => 'Prihlásenie úspešné.',
+                    'redirect' => $this->url("home.index"),
+                ]);
+
+            } else {
+                return $this->json([
+                    'success' => false,
+                    'message' => 'Prihlásenie neúspešné.',
+                    'error' => 'Nesprávny username alebo heslo',
+                ]);
             }
         }
 
-        $data = ($logged === false ? ['message' => 'Zlý login alebo heslo!'] : []);
-        return $this->html($data);
+        return $this->html();
     }
 
     /**
@@ -61,27 +73,15 @@ class AuthController extends AControllerBase
      */
     public function register(): Response
     {
-        $rawBody = file_get_contents('php://input');
-
-        if (empty($rawBody)) {
-            $formData = [];
-        } else {
-            try {
-                $formData = json_decode($rawBody, flags: JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                return $this->json(['success' => false, 'errors' => ['Neplatné JSON dáta!']]);
-            }
-        }
-
-        $formData = (array)$formData;
+        $formData = $this->request()->getRawBodyJSON();
 
         $errors = [];
 
-        $username = $formData['username'] ?? '';
-        $password = $formData['password'] ?? '';
-        $confirm_password = $formData['confirm_password'] ?? '';
-        $registered_at = $formData['registered_at'] ?? '';
-        $position = $formData['position'] ?? '';
+        $username = $formData->username ?? '';
+        $password = $formData->password ?? '';
+        $confirm_password = $formData->confirm_password ?? '';
+        $registered_at = $formData->registered_at ?? '';
+        $position = $formData->position ?? '';
 
         if ($username === '') {
             $errors[] = 'Pouzivatelske meno je povinne!';
@@ -124,12 +124,18 @@ class AuthController extends AControllerBase
             $user->save();
 
             $this->app->getAuth()->login($username, $password);
-            return $this->json(['success' => true, 'message' => 'Registrácia prebehla úspešne.']);
-        } elseif (!empty($rawBody))
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Registrácia prebehla úspešne.',
+                'redirect' => $this->url("home.index")
+            ]);
+
+        } elseif (!empty($formData))
         {
             return $this->json(['success' => false, 'errors' => $errors]);
         }
 
-        return $this->html($errors);
+        return $this->html();
     }
 }
