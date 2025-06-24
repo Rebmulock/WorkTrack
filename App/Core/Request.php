@@ -65,7 +65,19 @@ class Request
      */
     public function getRawBodyJSON(): mixed
     {
-        return json_decode(file_get_contents('php://input'), flags: JSON_THROW_ON_ERROR);
+        $rawBody = file_get_contents('php://input');
+
+        if (empty($rawBody)) {
+            $formData = [];
+        } else {
+            try {
+                $formData = json_decode($rawBody, flags: JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                return json_encode(['success' => false, 'errors' => ['Neplatné JSON dáta!']]);
+            }
+        }
+
+        return $formData;
     }
 
     /**
