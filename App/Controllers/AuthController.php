@@ -35,24 +35,34 @@ class AuthController extends AControllerBase
     public function login(): Response
     {
         $formData = $this->request()->getRawBodyJSON();
-        $logged = null;
+        $error = '';
 
         if (!empty($formData)) {
-            $logged = $this->app->getAuth()->login($formData->username, $formData->password);
-            if ($logged) {
-                return $this->json([
-                    'success' => true,
-                    'message' => 'Prihlásenie úspešné.',
-                    'redirect' => $this->url("home.index"),
-                ]);
+            if ($formData->username === '') {
+                $error = 'Pouzivatelske meno je povinne!';
+
+            } elseif (!preg_match('/^[a-zA-Z0-9]{5,}$/', $formData->username)) {
+                $error = 'Pouzivatelske meno je neplatne!';
 
             } else {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'Prihlásenie neúspešné.',
-                    'error' => 'Nesprávny username alebo heslo',
-                ]);
+                $logged = $this->app->getAuth()->login($formData->username, $formData->password);
+
+                if ($logged) {
+                    return $this->json([
+                        'success' => true,
+                        'message' => 'Prihlásenie úspešné.',
+                        'redirect' => $this->url("home.index"),
+                    ]);
+                }
+
+                $error = 'Nesprávny username alebo heslo';
             }
+
+            return $this->json([
+                'success' => false,
+                'message' => 'Prihlásenie neúspešné.',
+                'error' => $error,
+            ]);
         }
 
         return $this->html();
@@ -88,9 +98,7 @@ class AuthController extends AControllerBase
         } elseif (!preg_match('/^[a-zA-Z0-9]{5,}$/', $username)) {
             $errors[] = 'Pouzivatelske meno je neplatne!';
         } else {
-            $existingUser = User::getAll('`username` = ?', [$username]);
-
-            if ($existingUser) {
+            if ($this->app->getAuth()->usernameExists($username)) {
                 $errors[] = 'Pouzivatelske meno uz existuje!';
             }
         }
@@ -133,7 +141,7 @@ class AuthController extends AControllerBase
 
         } elseif (!empty($formData))
         {
-            return $this->json(['success' => false, 'errors' => $errors]);
+            return $this->json(['success' => false, 'error' => $errors]);
         }
 
         return $this->html();
