@@ -31,10 +31,13 @@ class DBAuthenticator implements IAuthenticator
     public function login($login, $password): bool
     {
         if ($this->usernameExists($login)) {
-            $real_password = User::getAll('`username` = ?', [$login])[0]->getPassword();
+            $user = User::getAll('`username` = ?', [$login])[0];
+            $real_password = $user->getPassword();
+            $user_id = $user->getId();
 
             if (password_verify($password, $real_password)) {
                 $_SESSION['user'] = $login;
+                $_SESSION['user_id'] = $user_id;
                 return true;
             }
 
@@ -97,6 +100,6 @@ class DBAuthenticator implements IAuthenticator
      */
     public function getLoggedUserId(): mixed
     {
-        return $_SESSION['user'];
+        return $_SESSION['user_id'] ?? null;
     }
 }
