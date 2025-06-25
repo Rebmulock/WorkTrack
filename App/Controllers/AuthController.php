@@ -122,7 +122,13 @@ class AuthController extends AControllerBase
             }
         }
 
-        if (empty($errors)) {
+        if ($position !== 0 && $position !== 1)
+        {
+            $errors[] = 'Neplatna pozicia!';
+        }
+
+        if (empty($errors))
+        {
             $user = new User();
             $user->setUsername($username);
             $user->setPassword(password_hash($password, PASSWORD_DEFAULT));
