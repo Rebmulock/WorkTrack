@@ -6,6 +6,7 @@
 
 use App\Core\LinkGenerator;
 use App\Core\IAuthenticator;
+use App\Models\User;
 
 ?>
 
@@ -25,8 +26,19 @@ use App\Core\IAuthenticator;
             </li>
 
             <?php if ($auth->isLogged()): ?>
+                <?php
+                $user = User::getOne($auth->getLoggedUserId());
+                $profileLink = '';
+
+                if ($user && $user->getPosition() == 1) {
+                    $profileLink = $link->url("admin.profile");
+                } else {
+                    $profileLink = $link->url("user.profile");
+                }
+                ?>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="">Profil</a>
+                    <a class="nav-link" href="<?= $profileLink ?>">Profil</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $link->url("auth.logout") ?>">Odhlásiť sa</a>

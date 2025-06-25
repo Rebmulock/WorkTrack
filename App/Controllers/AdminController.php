@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Core\AControllerBase;
 use App\Core\Responses\Response;
+use App\Core\Responses\ViewResponse;
 
 /**
  * Class HomeController
@@ -17,16 +18,21 @@ class AdminController extends AControllerBase
      * @param $action
      * @return bool
      */
-    public function authorize($action)
+    public function authorize($action): bool
     {
         return $this->app->getAuth()->isLogged();
     }
 
     /**
      * Example of an action (authorization needed)
-     * @return \App\Core\Responses\Response|\App\Core\Responses\ViewResponse
+     * @return Response|ViewResponse
      */
-    public function index(): Response
+    public function index(): Response|ViewResponse
+    {
+        return $this->html();
+    }
+
+    public function profile() : Response
     {
         return $this->html();
     }
