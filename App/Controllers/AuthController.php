@@ -27,6 +27,16 @@ class AuthController extends AControllerBase
         return $this->redirect(Configuration::LOGIN_URL);
     }
 
+    public function redirectIfLogged(bool $ifLogged): ?Response
+    {
+        if (($ifLogged && $this->app->getAuth()->isLogged()) || (!$ifLogged && !$this->app->getAuth()->isLogged()))
+        {
+            return $this->redirect($this->url("home.index"));
+        }
+
+        return null;
+    }
+
     /**
      * Login a user
      * @return Response
@@ -34,6 +44,13 @@ class AuthController extends AControllerBase
      */
     public function login(): Response
     {
+        $redirectUser = $this->redirectIfLogged(true);
+
+        if ($redirectUser !== null)
+        {
+            return $redirectUser;
+        }
+
         $formData = $this->request()->getRawBodyJSON();
         $error = '';
 
@@ -48,10 +65,26 @@ class AuthController extends AControllerBase
                 $logged = $this->app->getAuth()->login($formData->username, $formData->password);
 
                 if ($logged) {
+                    $redirect = null;
+
+                    switch (User::getOne($this->app->getAuth()->getLoggedUserId())->getPosition())
+                    {
+                        case 0:
+                            $redirect = $this->url("user.profile");
+                            break;
+
+                        case 1:
+                            $redirect = $this->url("admin.profile");
+                            break;
+
+                        default:
+                            break;
+                    }
+
                     return $this->json([
                         'success' => true,
                         'message' => 'Prihlásenie úspešné.',
-                        'redirect' => $this->url("home.index"),
+                        'redirect' => $redirect,
                     ]);
                 }
 
@@ -74,7 +107,15 @@ class AuthController extends AControllerBase
      */
     public function logout(): Response
     {
+        $redirectUser = $this->redirectIfLogged(false);
+
+        if ($redirectUser !== null)
+        {
+            return $redirectUser;
+        }
+
         $this->app->getAuth()->logout();
+
         return $this->html();
     }
 
@@ -83,6 +124,13 @@ class AuthController extends AControllerBase
      */
     public function register(): Response
     {
+        $redirectUser =  $this->redirectIfLogged(true);
+
+        if ($redirectUser !== null)
+        {
+            return $redirectUser;
+        }
+
         $formData = $this->request()->getRawBodyJSON();
 
         $errors = [];
@@ -142,7 +190,7 @@ class AuthController extends AControllerBase
             return $this->json([
                 'success' => true,
                 'message' => 'Registrácia prebehla úspešne.',
-                'redirect' => $this->url("home.index")
+                'redirect' => $this->url("user.profile")
             ]);
 
         } elseif (!empty($formData))
