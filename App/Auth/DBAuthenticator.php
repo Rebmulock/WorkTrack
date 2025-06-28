@@ -34,10 +34,12 @@ class DBAuthenticator implements IAuthenticator
             $user = User::getAll('`username` = ?', [$login])[0];
             $real_password = $user->getPassword();
             $user_id = $user->getId();
+            $position = $user->getPosition();
 
             if (password_verify($password, $real_password)) {
                 $_SESSION['user'] = $login;
                 $_SESSION['user_id'] = $user_id;
+                $_SESSION['position'] = $position;
                 return true;
             }
 
@@ -82,6 +84,15 @@ class DBAuthenticator implements IAuthenticator
      */
     public function getLoggedUserContext(): mixed
     {
+        if ($this->isLogged())
+        {
+            return [
+                'username' => $_SESSION['user'],
+                'id' => $_SESSION['user_id'],
+                'position' => $_SESSION['position']
+            ];
+        }
+
         return null;
     }
 
