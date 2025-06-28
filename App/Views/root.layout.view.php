@@ -4,7 +4,6 @@ use App\Config\Configuration;
 use App\Core\IAuthenticator;
 
 /** @var string $contentHTML */
-/** @var IAuthenticator $auth */
 ?>
 
 <!DOCTYPE html>

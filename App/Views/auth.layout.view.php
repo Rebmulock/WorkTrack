@@ -16,7 +16,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../../public/css/style.css">
     <link rel="icon" href="data:,">
-    <script src="public/js/script.js"></script>
 </head>
 <body>
     <div class="web-content">
