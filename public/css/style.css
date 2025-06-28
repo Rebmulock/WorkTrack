@@ -16,6 +16,12 @@
     color: #fff;
 }
 
+@media (max-width: 620px) {
+    .navbar {
+        min-height: 8rem;
+    }
+}
+
 .title {
     font-size: 2rem;
 
@@ -47,11 +53,12 @@
     color: white;
 }
 
-.homepage-container {
+.general-container {
     width: 100%;
     height: 100vh;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -85,16 +92,6 @@
     margin-top: 10rem;
 }
 
-.auth-container {
-    width: 100%;
-    height: 100%;
-
-    margin-top: 10rem;
-
-    display: flex;
-    justify-content: center;
-}
-
 .auth-form {
     display: flex;
     flex-direction: column;
@@ -121,9 +118,56 @@
     width: 100%;
 }
 
+.profile-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
 
-@media (max-width: 620px) {
-    .navbar {
-        min-height: 8rem;
-    }
+    gap: 1rem;
+}
+
+.left-cell {
+    grid-column: 1;
+}
+
+.right-cell {
+    grid-row: 1;
+    grid-column: 2;
+}
+
+.cell {
+    padding: 1rem;
+}
+
+.cell label {
+    font-weight: bold;
+    margin-right: 1rem;
+}
+
+.passwd-grid {
+    max-width: fit-content;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+
+    gap: 1rem;
+}
+
+.passwd-left {
+    display: flex;
+    flex-direction: column;
+    grid-column: 1;
+}
+
+.passwd-right {
+    display: flex;
+    flex-direction: column;
+    grid-column: 2;
+}
+
+.passwd-btn {
+    display: flex;
+    justify-content: center;
+    grid-column: 1 / span 2;
 }
