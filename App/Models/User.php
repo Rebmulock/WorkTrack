@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Core\Model;
-use DateTime;
 
 class User extends Model
 {
@@ -11,7 +10,7 @@ class User extends Model
     protected string $username;
     protected string $password;
     protected string $registered_at;
-    protected string $position;
+    protected int $position;
 
     public function getId(): ?int
     {
@@ -48,12 +47,12 @@ class User extends Model
         $this->registered_at = $registered_at;
     }
 
-    public function getPosition(): ?string
+    public function getPosition(): int
     {
         return $this->position;
     }
 
-    public function setPosition(string $position): void
+    public function setPosition(int $position): void
     {
         $this->position = $position;
     }
