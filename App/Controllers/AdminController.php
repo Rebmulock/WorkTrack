@@ -29,7 +29,7 @@ class AdminController extends AControllerBase
      */
     public function index(): Response|ViewResponse
     {
-        return $this->html();
+        return $this->redirect($this->url('home.index'));
     }
 
     public function panel() : Response
