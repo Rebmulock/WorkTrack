@@ -32,7 +32,7 @@ class AdminController extends AControllerBase
         return $this->html();
     }
 
-    public function profile() : Response
+    public function panel() : Response
     {
         return $this->html();
     }

@@ -74,7 +74,7 @@ class AuthController extends AControllerBase
                             break;
 
                         case 1:
-                            $redirect = $this->url("admin.profile");
+                            $redirect = $this->url("admin.panel");
                             break;
 
                         default:

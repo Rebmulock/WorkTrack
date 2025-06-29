@@ -29,16 +29,19 @@ use App\Models\User;
                 <?php
                 $user = User::getOne($auth->getLoggedUserId());
                 $profileLink = '';
+                $linkName = '';
 
                 if ($user && $user->getPosition() == 1) {
-                    $profileLink = $link->url("admin.profile");
+                    $profileLink = $link->url("admin.panel");
+                    $linkName = "Admin Panel";
                 } else {
                     $profileLink = $link->url("user.profile");
+                    $linkName = "Profil";
                 }
                 ?>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="<?= $profileLink ?>">Profil</a>
+                    <a class="nav-link" href="<?= $profileLink ?>"><?= $linkName ?></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= $link->url("auth.logout") ?>">Odhlásiť sa</a>
