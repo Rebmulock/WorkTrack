@@ -63,6 +63,10 @@
     align-items: center;
 }
 
+.general-container h2 {
+    margin-top: 10rem;
+}
+
 .background-gif {
     width: auto;
     height: auto;
@@ -155,12 +159,16 @@
 }
 
 .passwd-left {
+    width: 15rem;
+
     display: flex;
     flex-direction: column;
     grid-column: 1;
 }
 
 .passwd-right {
+    width: 15rem;
+
     display: flex;
     flex-direction: column;
     grid-column: 2;
@@ -170,4 +178,16 @@
     display: flex;
     justify-content: center;
     grid-column: 1 / span 2;
+}
+
+@media (max-width: 670px) {
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .passwd-grid {
+        display: flex;
+        flex-direction: column;
+    }
 }
